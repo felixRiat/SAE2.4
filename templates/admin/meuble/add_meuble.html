@@ -1,0 +1,67 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Ajouter un meuble</title>
+{% endblock %}
+
+{% block body %}
+
+  <h2>Ajout d'un meuble</h2>
+
+  {% if error %}
+      <p class="error"><strong>Error:</strong></p> {{ error }}
+  {% endif %}
+
+  <form method="post" action="/admin/meuble/add">
+    <fieldset>
+        <legend>Créer un meuble</legend>
+        <label for="libelle_meuble">Libelle du meuble</label>
+        <br>
+        <input id="libelle_meuble" type="text" name="libelle_meuble" size="18" value="" placeholder="Saisir le libelle du meuble">
+        <br>
+        <label for="stock_meuble">Stock du meuble</label>
+        <br>
+        couleur :
+        <select name="id_couleur" required>
+            <option value="" disabled selected hidden>Selectionner une couleur</option>
+                    {% for couleur in couleurs %}
+                       <option value="{{ couleur.id_couleur }}" >{{ couleur.libelle_couleur }}</option>
+                    {% endfor %}
+
+        </select>
+        <input id="stock_meuble" type="number" name="stock_meuble" size="18" value="" placeholder="Saisissez le stock du meuble">
+        <br>
+        <label for="prix_meuble">Prix du meuble</label>
+        <br>
+        <input id="prix_meuble" type="number" name="prix_meuble" size="18" value="" placeholder="Saisissez le prix du meuble">
+        <br>
+        <label for="dimension_meuble">Dimension du meuble</label>
+        <br>
+        <input id="dimension_meuble" type="text" name="dimension_meuble" size="18" value="" placeholder="Saisissez les dimensions du meuble">
+        <br>
+        <label for="poids_meuble">Poids du meuble</label>
+        <br>
+        <input id="poids_meuble" type="number" name="poids_meuble" size="18" value="" placeholder="Saisissez le poids du meuble">
+        <br>
+        <label for="id_marque">Marque:</label><br>
+        <select name="id_marque" required>
+            <option value="" disabled selected hidden>Selectionner une marque</option>
+                    {% for ligne in MARQUE %}
+                       <option value="{{ ligne.id_marque }}">{{ ligne.libelle_marque }}</option>
+                    {% endfor %}
+
+        </select>
+        <br>
+        <label for="id_type_meuble">Type de meuble:</label><br>
+        <select name="id_type_meuble" required>*
+            <option value="" selected disabled hidden>Selectionner un type de meuble</option>
+                {% for ligne in TYPE_MEUBLE %}
+                   <option value="{{ ligne.id_type_meuble }}">{{ ligne.libelle_type_meuble }}</option>
+                {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="succes">Créer</button>
+        <button type="reset" class="echec">Réinitialiser</button>
+    </fieldset>
+  </form>
+{% endblock %}

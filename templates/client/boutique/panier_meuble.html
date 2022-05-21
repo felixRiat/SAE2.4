@@ -1,0 +1,168 @@
+{% extends "client/layout_client.html" %}
+
+{% block body %}
+    <div class="container">
+        <div class="row align-self-right">
+            <div class="col-7">
+            {% if articlesPanier | length >= 1 %}
+                <h3>Liste des meubles dans mon panier</h3>
+                <table class="table table-hover table-responsive">
+                    <tr>
+                        <th style="width: 300px">Nom</th>
+                        <th style="width: 50px">Quantité</th>
+                        <th style="width: 50px">Prix</th>
+                        <th style="width: 100px">Sous-Total</th>
+                        <th style="width: 400px">Action</th>
+                    </tr>
+                    {% if monPanier is defined %}
+                        <td>Votre panier est vide</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    {% else %}
+                    {% for itemPanier in articlesPanier %}
+                        <tr>
+                            <td>{{itemPanier.nom}}</td>
+                            <td>{{itemPanier.qte}} <i class="bi bi-circle-fill border border-5 rounded-pill" style="color: #{{ itemPanier.libelle_couleur }}"></i></td>
+                            {% if itemPanier.prix is defined %}
+                                <td>{{itemPanier.prix}}</td>
+                                <td>{{ "{:,.2f} €".format((itemPanier.prix * itemPanier.qte)) }}</td>
+                            {% else %}
+                                <td>prix ND</td><td>prix*qte ND</td>
+                            {% endif %}
+                            <td>
+                               {% if itemPanier.stock is defined and itemPanier.stock > 0 %}
+                                <form action="/client/panier/add" style="display: inline-block;"  method="post">
+                                    <input type="hidden" name="quantite" value="1">
+                                    <input type="hidden" name="id_meuble" value="{{ itemPanier.id_meuble }}">
+                                    <input type="hidden" name="id_couleur" value="{{ itemPanier.id_couleur }}">
+                                    <button class="btn btn-primary" > + </button>
+                                </form>
+                               {% endif %}
+                                <form action="/client/panier/delete"  style="display: inline-block;"  method="post">
+                                    <input type="hidden" name="id_meuble" value="{{ itemPanier.id_meuble }}">
+                                    <input type="hidden" name="id_couleur" value="{{ itemPanier.id_couleur }}">
+                                    <button class="btn btn-primary" > - </button>
+                                </form>
+
+                                <form action="/client/panier/delete/line" style="display: inline-block;"  method="post">
+                                    <input type="hidden" name="id_meuble" value="{{ itemPanier.id_meuble }}">
+                                    <input type="hidden" name="id_couleur" value="{{ itemPanier.id_couleur }}">
+                                    <button class="btn btn-primary" >Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    {% endif %}
+                </table>
+                    <form action="/client/panier/vider" style="display: inline-block;"  method="post" >
+                        <button class="btn btn-primary"  > Effacer tout </button>
+                    </form>
+                    <form action="/client/commande/add" style="display: inline-block;"  method="post" >
+                        <button class="btn btn-primary" > Passer ma commande </button>
+                    </form>
+                    {% if prix_total %}
+                    Total à payer : <strong>{{ "{:,.2f} €".format(prix_total) }}</strong>
+                    {% endif %}
+            {% endif %}
+            </div>
+
+
+            <div class="col">
+              <h3>Les filtres</h3>
+              Meubles dont le nom est composé par :<br>
+                 {% include('client/boutique/_filtre.html') %}
+            </div>
+
+        </div>
+        <!-- ----------------------------- -->
+        <!-- GESTION AFFICHAGE DES MEUBLES -->
+        <!-- ----------------------------- -->
+        <div class="bg-light p-3">
+            <h1>Les meubles</h1>
+        </div>
+
+        <div class="row">
+            {% for meuble in MEUBLES  %}
+                <div class="card col-4 mt-4">
+                    <div class="card-body border-dark rounded">
+                        <a href="/client/meuble/details/{{ meuble.id_meuble }}">
+                        <h2 class="card-title">
+                            <span style="color: #0b2e13">{{ meuble.libelle_meuble }}</span><br>
+                            {{ meuble.prix_meuble }}
+                            €
+                        </h2>
+                        <div class="card-body">
+                            <img class="card-img-top rounded mx-auto d-block"  style="width:100px;height:100px"  src="{{ meuble.url_image }}"  alt="image  de {{ meuble.libelle_meuble }}" >
+
+                            <hr>
+                        </div>
+                        </a>
+                        <div class="card-body">
+                                <form  action="/client/panier/add" method="post">
+                                    <input type="hidden" name="id_meuble" value="{{ meuble.id_meuble }}">
+                                    <button class="btn btn-success float-right">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        Ajouter
+                                     </button>
+
+                                    <div class="input-group input-group-sm" style="width: 4rem !important;">
+                                        <input type="number" id="input-{{ meuble.id_meuble }}" step="1" min="0" max="{{ meuble.stock_meuble }}" class="form-control" style="width: 4rem !important;" value="1" name="quantite">
+
+                                    </div>
+                                    <div class="input-group input-group-sm" style="width: 4rem !important;">
+                                        {% if meuble['stock_couleur'] | length >= 1 %}
+                                            {% for couleurs in meuble['stock_couleur'] %}
+                                                <span>
+                                                    <input type="radio" id="{{ couleurs.id_couleur }}" value="{{ couleurs.id_couleur }}" name="id_couleur">
+                                                    <label for="{{ couleurs.id_couleur }}"><i class="bi bi-circle-fill border border-5 rounded-pill" style="color: #{{ couleurs.libelle_couleur }}"></i></label>
+                                                </span>
+                                                <br>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    {% if meuble.stock_meuble is defined %}
+                         {% if meuble.stock_meuble > 0 %}
+                            <small class="text-muted">
+                                Stock restant : <br>
+                                {% if meuble['stock_couleur'] | length >= 1 %}
+                                    {% for couleurs in meuble['stock_couleur'] %}
+                                        <span>
+                                            <i class="bi bi-circle-fill border border-5 rounded-pill" style="color: #{{ couleurs.libelle_couleur }}"></i>
+                                            {{ couleurs.stock }} restant(s)
+                                        </span>
+                                        <br>
+                                    {% endfor %}
+                                {% endif %}
+
+                            </small>
+                         {% else %}
+                            <small class="text-muted">meuble  momentanément indisponible</small>
+                         {% endif %}
+                    {% endif %}
+                        <br>
+                    {% if meuble.nb_notes is defined %}
+                    {% if meuble.nb_notes > 1 %}
+                         <a  href="/client/meuble/details/{{ meuble.id_meuble }}">
+                            <span style="color: #3A7734"> note : {{  "{:,.1f}".format(meuble.moy_notes) }}</span>
+                         </a>
+                    {% endif %}
+                    {% endif %}
+                    {% if meuble.nb_avis is defined %}
+                    {% if meuble.nb_avis > 0 %}
+                         <a href="/client/meuble/details/{{ meuble.id_meuble }}">
+                            <span style="color: #3A7734">({{ meuble.nb_avis }} avis)</span>
+                         </a>
+                    {% endif %}
+                    {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

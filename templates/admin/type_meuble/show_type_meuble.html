@@ -1,0 +1,55 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Afficher les types de meuble</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Types de meuble</h2>
+    <p class="lienAjout">
+        <a class="btn btn-outline-success my-3" href="/admin/type-meuble/add">Ajouter un type de meuble</a>
+    </p>
+    <br>
+    <br>
+
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr class="text-center">
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>Nombre de meuble</th>
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <body>
+        {% if TYPE_MEUBLE | length >= 1 %}
+            {% for ligne in TYPE_MEUBLE %}
+               <tr class="text-center">
+                  <td>{{ ligne.id_type_meuble }}</td>
+                  <td>{{ ligne.libelle_type_meuble }}</td>
+                   <td>{{ ligne.nb_meuble }}</td>
+
+                  <td>
+                      <div class="lienEditSupCoteCote">
+                          <div class="lienEditSup">
+                              <a class="btn btn-outline-warning" href="/admin/type-meuble/edit/{{ ligne.id_type_meuble }}">Editer</a>
+                          </div>
+                          <div class="lienEditSup">
+                              <a class="btn btn-outline-danger" href="/admin/type-meuble/delete?id_type_meuble={{ ligne.id_type_meuble }}" onclick="return confirm('Êtes-vous sûr ?')" >Supprimer</a>
+                          </div>
+                      </div>
+                  </td>
+               </tr>
+            {% endfor %}
+        {% else %}
+                <tr>
+                      <td>
+                          Aucun type de meuble
+                      </td>
+               </tr>
+        {% endif %}
+        </body>
+    </table>
+</div>
+{% endblock %}

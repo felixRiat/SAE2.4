@@ -1,0 +1,26 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Supprimer les type de meubles</title>
+{% endblock %}
+
+{% block body %}
+    <h2>Pour supprimer ce type de meuble, il faut supprimer le(s) meuble(s) suivant(s) :</h2>
+    <div class="container">
+        <ul>
+            {% if MEUBLES | length >=1 %}
+                {% for ligne in MEUBLES %}
+                    <li>libelle : {{ ligne.libelle_meuble }} - prix : {{ ligne.prix_meuble }} - <a class="btn btn-outline-danger" href="/admin/meuble/delete?id={{ ligne.id_meuble }}&amp;flag=type&amp;id_type={{ ligne.id_type_meuble }}" onclick="return confirm('Are You sure ?')">
+                                                                                    <div>Supprimer</div>
+                                                                                </a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Pas de meuble</li>
+            {% endif %}
+        </ul>
+        <a class="btn btn-outline-warning" href="/admin/type-meubles/show">
+            <div>Annuler</div>
+        </a>
+    </div>
+{% endblock %}

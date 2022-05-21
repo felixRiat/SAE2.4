@@ -1,0 +1,64 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Modifier un meuble</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Modification d'un meuble</h2>
+  {% if error %}
+    <p class=error><strong>Error:</strong> {{ error }}
+  {% endif %}
+
+  <form method="post" action="/admin/meuble/edit">
+    <fieldset>
+        <legend>Modifier un meuble</legend>
+
+
+        <input type="hidden" name="id_meuble" value="{{ MEUBLE.id_meuble }}" id="id_meuble">
+        <label for="libelle_meuble">Libelle du meuble</label>
+        <br>
+        <input type="text" name="libelle_meuble" value="{{ MEUBLE.libelle_meuble }}" id="libelle_meuble">
+        <br>
+        <label for="stock_meuble">Stock du meuble</label>
+        <br>
+        {% for couleur in couleurs %}
+            <i class="bi bi-circle-fill border border-5 rounded-pill" style="color: #{{ couleur.libelle_couleur }}"></i> :
+            <input type="number" name="{{ couleur.id_couleur }}" value="{{ couleur.stock }}" id="{{ couleur.id_couleur }}"> <br>
+        {% endfor %}
+        <br>
+        <label for="prix_meuble">Prix du meuble</label>
+        <br>
+        <input type="number" name="prix_meuble" value="{{ MEUBLE.prix_meuble }}" id="prix_meuble">
+        <br>
+        <label for="dimension_meuble">Dimensions du meuble</label>
+        <br>
+        <input type="text" name="dimension_meuble" value="{{ MEUBLE.dimension_meuble }}" id="dimension_meuble">
+        <br>
+        <label for="poids_meuble">Poids du meuble</label>
+        <br>
+        <input type="number" name="poids_meuble" value="{{ MEUBLE.poids_meuble }}" id="poids_meuble">
+        <br>
+        <label for="id_marque">Id de la marque:</label><br>
+        <select name="id_marque" required>
+            {% for ligne in MARQUE %}
+               <option value="{{ ligne.id_marque }}" {% if MEUBLE.id_marque is defined and ligne.id_marque == MEUBLE.id_marque %}selected{% endif %} >
+                   {{ ligne.libelle_marque }}
+               </option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="id_type_meuble">Id du type de meuble:</label><br>
+        <select name="id_type_meuble" required>
+            {% for ligne in TYPE_MEUBLE %}
+               <option value="{{ ligne.id_type_meuble }}" {% if MEUBLE.id_type_meuble is defined and ligne.id_type_meuble == MEUBLE.id_type_meuble %}selected{% endif %}>
+                   {{ ligne.libelle_type_meuble }}
+               </option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit" class="succes">Modifier</button>
+        <button type="reset" class="echec">Réinitialiser</button>
+    </fieldset>
+  </form>
+{% endblock %}

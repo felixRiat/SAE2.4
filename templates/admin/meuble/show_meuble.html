@@ -1,0 +1,75 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Afficher les meubles</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Meuble(s)</h2>
+    <p class="lienAjout">
+        <a class="btn btn-outline-success my-3" href="/admin/meuble/add">
+            Ajouter une meuble
+        </a>
+    </p>
+    <br>
+    <br>
+
+    <table class="table table-hover table-bordered">
+        <thead>
+            <tr class="text-center">
+                <th>Id</th>
+                <th>Libelle</th>
+                <th>Stock</th>
+                <th>Prix en €</th>
+                <th>Dimensions</th>
+                <th>Poids en kg</th>
+                <th>Marque</th>
+                <th>Type de meuble</th>
+                <th>Opperation</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% if MEUBLE | length >= 1 %}
+            {% for ligne in MEUBLE %}
+               <tr class="text-center">
+                    <td>{{ ligne.id_meuble }}</td>
+                    <td>{{ ligne.libelle_meuble }}</td>
+                    <td>
+                    {% if ligne['stock_meuble'] | length >= 1 %}
+                        {% for couleurs in ligne['stock_meuble'] %}
+                            <span>
+                                <i class="bi bi-circle-fill border border-5 rounded-pill" style="color: #{{ couleurs.libelle_couleur }}"></i>
+                                qte : {{ couleurs.stock }}
+                            </span>
+                            <br>
+                        {% endfor %}
+                    {% endif %}
+                    </td>
+                    <td>{{ ligne.prix_meuble }}</td>
+                    <td>{{ ligne.dimension_meuble }}</td>
+                    <td>{{ ligne.poids_meuble }}</td>
+                    <td>{{ ligne.libelle_marque }}(<span class="text-primary">{{ ligne.id_marque }}</span>)</td>
+                    <td>{{ ligne.libelle_type_meuble }}(<span class="text-primary">{{ ligne.id_type_meuble }}</span>)</td>
+                    <td>
+                        <div class="lienEditSup">
+                            <a class="btn btn-outline-warning" href="/admin/meuble/edit/{{ ligne.id_meuble }}">Editer</a>
+                        </div>
+                        <div class="lienEditSup">
+                            <a class="btn btn-outline-danger" href="/admin/meuble/delete?id={{ ligne.id_meuble }}&amp;flag=meuble" onclick="return confirm('Ëtes-vous sûr ?')" >Supprimer</a>
+                        </div>
+                    </td>
+               </tr>
+            {% endfor %}
+        {% else %}
+                <tr>
+                      <td>
+                          Aucun meuble
+                      </td>
+               </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

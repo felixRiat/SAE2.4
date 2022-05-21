@@ -1,0 +1,28 @@
+{% extends 'admin/layout_admin.html' %}
+
+{% block title %}
+    <title>Ajouter un type de meuble</title>
+{% endblock %}
+
+{% block body %}
+  <h2>Ajout d'un type de meuble</h2>
+
+  {% if error %}
+      <p class="error"><strong>Error:</strong></p> {{ error }}
+  {% endif %}
+
+  <form method="post" action="/admin/type-meuble/add">
+    <fieldset>
+        <legend>Créer un type de meuble</legend>
+
+
+        <input id="id_type_meuble" type="hidden" name="id_type_meuble" value="" placeholder="Saisir l'id du type de meuble" style="text-align: center">
+        <label for="libelle_type_meuble">Nom du lieu</label><br>
+        <input type="text" name="libelle_type_meuble" placeholder="Saisir le libelle du type de meuble" id="libelle_type_meuble" style="...">
+        <br>
+        <button type="submit" class="succes">Créer</button>
+        <button type="reset" class="echec">Réinitialiser</button>
+    </fieldset>
+  </form>
+
+{% endblock %}
